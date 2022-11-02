@@ -152,7 +152,7 @@ public class IncrementalControlScript : MonoBehaviour
 
             }
 
-            PlayerController.instance.PlayerLevelButtonGuncelle();
+            //PlayerController.instance.PlayerLevelButtonGuncelle();
 
         }
         else

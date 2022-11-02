@@ -51,7 +51,7 @@ public class UIController : MonoBehaviour
         GamePanel.SetActive(true);
         SetLevelText(LevelController.instance.totalLevelNo);
         SetGamePlayScoreText();
-        PlayerController.instance.PlayerKossun();
+        //PlayerController.instance.PlayerKossun();
 
     }
 
@@ -231,7 +231,7 @@ public class UIController : MonoBehaviour
         WinPanel.SetActive(false);
         LoosePanel.SetActive(false);
         GamePanel.SetActive(false);
-        PlayerPrefs.SetInt("totalScore", 99999);
+        //PlayerPrefs.SetInt("totalScore", 99999);
         tapToStartScoreText.text = PlayerPrefs.GetInt("totalScore").ToString();
         IncrementalControlScript.instance.ButonKontrol();
     }

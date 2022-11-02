@@ -14,41 +14,32 @@ public class PlayerController : MonoBehaviour
     public bool xVarMi = true;
     public bool collectibleVarMi = true;
 
+    [SerializeField] private Animator _animator;
+
+    public bool _elindeParcaVarMi;
+
     [SerializeField] private GameObject _karakter;
 
-    public List<Material> _materials = new List<Material>();
-
-    [SerializeField] private Animator _karakterAnimator;
-
-    [SerializeField] private GameObject _silah;
-
-    [SerializeField] private GameObject _bulletSpawnPoint;
-
-    [SerializeField] private GameObject _bulletObject;
-
-    [SerializeField] private TextMeshProUGUI _levelText;
-
-    public static bool _onumdeDusmanVar;
-
-    [SerializeField] private float _fireRate;
+    [SerializeField] private GameObject _tasimaNoktasi;
+    [SerializeField] private GameObject _birakmaNoktasi;
 
     private float _timer;
 
-    public int _renkKodu;
-
-    public int _playerLevel;
-
-    [SerializeField] private GameObject _askerParent;
-
     public int _incomeDegeri;
-
-    private float _scriptFireRate;
 
     public float _oyunSonuCarpimDegeri;
 
-    private bool _atesEt;
+    public JoystickController _joystickController;
 
-    private bool _siniriGecti;
+    [HideInInspector] public int _playerLevel;
+
+    private GameObject _tasinanKup;
+
+    public bool _yerBelirlendi;
+
+    public GameObject _yerlestirilmisKupSecildi;
+
+    public Slider _timerSlider;
 
     private void Awake()
     {
@@ -63,43 +54,40 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (GameController.instance.isContinue && _atesEt)
+        if (_elindeParcaVarMi == true)
         {
             _timer += Time.deltaTime;
 
-
-            if (_timer > _scriptFireRate)
+            if (_joystickController._velocityX == 0 && _joystickController._velocityZ == 0 && _tasinanKup.GetComponent<KupScript>()._yerlesecegiNokta == null)
             {
-                _timer = 0;
-                GameObject bullet = Instantiate(_bulletObject, _bulletSpawnPoint.transform.position, Quaternion.identity);
-                bullet.GetComponent<BulletScript>()._bulletRenkKodu = _renkKodu;
-                bullet.GetComponent<Renderer>().material = _materials[_renkKodu];
-
-                if (_askerParent.transform.childCount > 0 && _siniriGecti == false)
+                if (_timer > 1f)
                 {
-                    for (int i = 0; i < _askerParent.transform.childCount; i++)
-                    {
-                        if (_askerParent.transform.GetChild(i).gameObject.GetComponent<EnemyScript>()._yerineGecti == true)
-                        {
-                            _askerParent.transform.GetChild(i).gameObject.GetComponent<EnemyScript>().AtesEt();
-                        }
-                        else
-                        {
+                    MoreMountains.NiceVibrations.MMVibrationManager.Haptic(MoreMountains.NiceVibrations.HapticTypes.MediumImpact);
 
-                        }
-                    }
+                    _tasinanKup.transform.parent = null;
+                    _tasinanKup.transform.DOJump(_birakmaNoktasi.transform.position, 2, 1, 0.5f).OnComplete(() => _tasinanKup.GetComponent<KupScript>()._tozEffect.Play());
+                    _tasinanKup.GetComponent<KupScript>()._tasiniyorMu = false;
+                    _elindeParcaVarMi = false;
                 }
                 else
                 {
 
                 }
+
             }
             else
             {
 
             }
+        }
+        else
+        {
 
+        }
 
+        if (_joystickController._velocityX != 0 || _joystickController._velocityZ != 0)
+        {
+            _timerSlider.value = 0;
         }
         else
         {
@@ -111,51 +99,35 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
 
-        if (other.gameObject.tag == "Kapi")
+        if (other.gameObject.tag == "TasinacakKup")
         {
-            MoreMountains.NiceVibrations.MMVibrationManager.Haptic(MoreMountains.NiceVibrations.HapticTypes.MediumImpact);
+            if (other.gameObject.GetComponent<KupScript>()._kupYerlesti == false)
+            {
+                if (_elindeParcaVarMi == false)
+                {
 
-            if (other.GetComponent<KapiRengi>()._renk1)
-            {
-                _karakter.GetComponent<Renderer>().material = _materials[1];
-                _renkKodu = 1;
-                for (int i = 0; i < _askerParent.transform.childCount; i++)
-                {
-                    _askerParent.transform.GetChild(i).gameObject.GetComponent<EnemyScript>().EnemyRenkGuncelle(_renkKodu);
+                    MoreMountains.NiceVibrations.MMVibrationManager.Haptic(MoreMountains.NiceVibrations.HapticTypes.MediumImpact);
+
+                    _elindeParcaVarMi = true;
+                    other.gameObject.transform.parent = _tasimaNoktasi.transform;
+                    other.gameObject.transform.DOLocalJump(Vector3.zero, 2, 1, 0.5f);
+                    other.gameObject.transform.DOLocalRotate(Vector3.zero, 0.5f);
+                    other.gameObject.GetComponent<KupScript>()._tasiniyorMu = true;
+                    _tasinanKup = other.gameObject;
+
+                    _timer = 0;
+
+                    Debug.Log("Tasinmaya Calisiliyor");
                 }
-            }
-            else if (other.GetComponent<KapiRengi>()._renk2)
-            {
-                _karakter.GetComponent<Renderer>().material = _materials[2];
-                _renkKodu = 2;
-                for (int i = 0; i < _askerParent.transform.childCount; i++)
+                else
                 {
-                    _askerParent.transform.GetChild(i).gameObject.GetComponent<EnemyScript>().EnemyRenkGuncelle(_renkKodu);
-                }
-            }
-            else if (other.GetComponent<KapiRengi>()._renk3)
-            {
-                _karakter.GetComponent<Renderer>().material = _materials[3];
-                _renkKodu = 3;
-                for (int i = 0; i < _askerParent.transform.childCount; i++)
-                {
-                    _askerParent.transform.GetChild(i).gameObject.GetComponent<EnemyScript>().EnemyRenkGuncelle(_renkKodu);
-                }
-            }
-            else if (other.GetComponent<KapiRengi>()._renk4)
-            {
-                _karakter.GetComponent<Renderer>().material = _materials[4];
-                _renkKodu = 4;
-                for (int i = 0; i < _askerParent.transform.childCount; i++)
-                {
-                    _askerParent.transform.GetChild(i).gameObject.GetComponent<EnemyScript>().EnemyRenkGuncelle(_renkKodu);
+
                 }
             }
             else
             {
 
             }
-
 
             // COLLECTIBLE CARPINCA YAPILACAKLAR...
             //GameController.instance.SetScore(collectibleDegeri); // ORNEK KULLANIM detaylar icin ctrl+click yapip fonksiyon aciklamasini oku
@@ -193,8 +165,7 @@ public class PlayerController : MonoBehaviour
 
             transform.localPosition = new Vector3(0, 1, 0);
             GameController.instance._hareketiDurdur = true;
-            _atesEt = false;
-            _siniriGecti = true;
+
             YanindakileriYokEt();
             //_scriptFireRate = _fireRate / 2;
 
@@ -203,8 +174,6 @@ public class PlayerController : MonoBehaviour
         {
             MoreMountains.NiceVibrations.MMVibrationManager.Haptic(MoreMountains.NiceVibrations.HapticTypes.MediumImpact);
 
-            _scriptFireRate = _fireRate / 2;
-            _atesEt = true;
 
 
         }
@@ -213,61 +182,43 @@ public class PlayerController : MonoBehaviour
 
         }
 
-    }
-
-    public void PlayerKossun()
-    {
-        //_karakterAnimator.SetBool("Attack", false);
-        //_karakterAnimator.SetBool("Run", true);
-        PlayerAtesEtsin();
     }
 
     public void PlayerDursun()
     {
-        _silah.SetActive(false);
-        _karakterAnimator.SetBool("Run", false);
-        _karakterAnimator.SetBool("Attack", false);
-
-        for (int i = 0; i < _askerParent.transform.childCount; i++)
-        {
-            _askerParent.transform.GetChild(i).gameObject.GetComponent<EnemyScript>().EnemyOyunBitti();
-            //Destroy(_askerParent.transform.GetChild(i).gameObject);
-        }
-
         Invoke("KaybettiEkrani", 1f);
+    }
+
+    public void PlayerDansEt()
+    {
+        _animator.SetBool("carry", false);
+        _animator.SetBool("carryidle", false);
+        _animator.SetBool("walk", false);
+        _animator.SetBool("dance", true);
+    }
+
+    public void PlayerIdleDon()
+    {
+        _animator.SetBool("carry", false);
+        _animator.SetBool("carryidle", false);
+        _animator.SetBool("walk", false);
+        _animator.SetBool("dance", false);
     }
 
     private void YanindakileriYokEt()
     {
-        if (_askerParent.transform.childCount > 0)
-        {
-            for (int i = 0; i < _askerParent.transform.childCount; i++)
-            {
-                //_askerParent.transform.GetChild(i).gameObject.transform.DOLocalMove(Vector3.zero, 1f).OnComplete(() => PlayerLevelGuncelle(1));
-                _askerParent.transform.GetChild(i).gameObject.transform.DOLocalMove(Vector3.zero, 1f);
-                //_playerLevel++;
-                //_levelText.text = "Lv " + _playerLevel.ToString();
-            }
-        }
-        else
-        {
 
-        }
     }
 
     public void PlayerKazandi()
     {
-        _silah.SetActive(false);
-        _karakterAnimator.SetBool("Run", false);
-        _karakterAnimator.SetBool("Attack", false);
-        _karakterAnimator.SetBool("Victory", true);
-
-        Invoke("KazandiEkrani", 3f);
+        //Invoke("KazandiEkrani", 3f);
+        KazandiEkrani();
     }
 
     private void KazandiEkrani()
     {
-        GameController.instance.ScoreCarp(_oyunSonuCarpimDegeri);
+        GameController.instance.ScoreCarp(1);
         UIController.instance.ActivateWinScreen();
     }
 
@@ -276,25 +227,11 @@ public class PlayerController : MonoBehaviour
         UIController.instance.ActivateLooseScreen();
     }
 
-    public void PlayerAtesEtsin()
-    {
-        _silah.SetActive(true);
-        _karakterAnimator.SetBool("Run", false);
-        _karakterAnimator.SetBool("Attack", true);
-    }
 
-    public void PlayerLevelGuncelle(int deger)
-    {
-        _playerLevel = _playerLevel + deger;
-        _levelText.text = "Lv " + _playerLevel.ToString();
-        _levelText.gameObject.transform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), 0.2f).OnComplete(() => _levelText.gameObject.transform.DOScale(new Vector3(1f, 1f, 1f), 0.2f));
-
-    }
-
-    public void PlayerCoinGuncelle()
+    public void PlayerCoinGuncelle(int deger)
     {
 
-        GameController.instance.SetScore(_incomeDegeri);
+        GameController.instance.SetScore(collectibleDegeri * deger);
         //Debug.Log("INCOME --- " + _incomeDegeri);
         //Debug.Log("SCORE ---- " + GameController.instance.score);
     }
@@ -304,11 +241,41 @@ public class PlayerController : MonoBehaviour
         _oyunSonuCarpimDegeri = deger;
     }
 
-    public void PlayerLevelButtonGuncelle()
+    public void KupYerlestirPlayer()
     {
-        _playerLevel = PlayerPrefs.GetInt("PowerLevelDegeri");
-        _levelText.text = "Lv " + _playerLevel.ToString();
+
+        if (_elindeParcaVarMi == false)
+        {
+            MoreMountains.NiceVibrations.MMVibrationManager.Haptic(MoreMountains.NiceVibrations.HapticTypes.MediumImpact);
+
+            _elindeParcaVarMi = true;
+            _yerlestirilmisKupSecildi.gameObject.transform.parent = _tasimaNoktasi.transform;
+            gameObject.transform.DOKill();
+            _yerlestirilmisKupSecildi.gameObject.transform.DOLocalJump(Vector3.zero, 2, 1, 0.5f);
+            _yerlestirilmisKupSecildi.gameObject.transform.DOLocalRotate(Vector3.zero, 0.5f);
+            _yerlestirilmisKupSecildi.gameObject.GetComponent<KupScript>()._tasiniyorMu = true;
+            _tasinanKup = _yerlestirilmisKupSecildi;
+            _yerlestirilmisKupSecildi.GetComponent<KupScript>()._kupYerlesti = false;
+            _yerlestirilmisKupSecildi.GetComponent<KupScript>()._yerlesecegiNokta.GetComponent<YerlesmeNoktasiScript>()._yerlesmeNoktasiDoluMu = false;
+            _yerlestirilmisKupSecildi.GetComponent<KupScript>()._yerlesecegiNokta.GetComponent<YerlesmeNoktasiScript>().YerBosalt();
+            _yerlestirilmisKupSecildi.GetComponent<KupScript>()._yerlesecegiNokta.GetComponent<YerlesmeNoktasiScript>()._yerlesenKup = null;
+            _yerlestirilmisKupSecildi.GetComponent<KupScript>()._yerlesecegiNokta = null;
+            _yerlestirilmisKupSecildi.GetComponent<KupScript>()._tekrarYerlesebilir = false;
+            _yerBelirlendi = false;
+            _yerlestirilmisKupSecildi.transform.GetChild(0).gameObject.GetComponent<BoxCollider>().enabled = true;
+
+            _timerSlider.value = 0;
+
+            _timer = 0;
+        }
+        else
+        {
+
+        }
+
     }
+
+
 
     /// <summary>
     /// Bu fonksiyon her level baslarken cagrilir. 
@@ -323,44 +290,15 @@ public class PlayerController : MonoBehaviour
         GameController.instance.score = 0;
         transform.position = new Vector3(0, transform.position.y, 0);
 
-        _incomeDegeri = (1 + PlayerPrefs.GetInt("IncomeLevelDegeri"));
+        PlayerIdleDon();
+
+        //_incomeDegeri = (1 + PlayerPrefs.GetInt("IncomeLevelDegeri"));
         _oyunSonuCarpimDegeri = 1;
 
-        _onumdeDusmanVar = false;
-        _karakterAnimator.SetBool("Run", false);
-        _karakterAnimator.SetBool("Attack", false);
-        _karakterAnimator.SetBool("Victory", false);
+        _elindeParcaVarMi = false;
+        _yerBelirlendi = false;
 
-        _scriptFireRate = _fireRate;
-
-        _atesEt = true;
-        _siniriGecti = false;
-
-        _renkKodu = 0;
-        _karakter.GetComponent<Renderer>().material = _materials[_renkKodu];
-
-        if (PlayerPrefs.GetInt("PowerLevelDegeri") < 1)
-        {
-            _playerLevel = 1;
-        }
-        else
-        {
-            _playerLevel = PlayerPrefs.GetInt("PowerLevelDegeri");
-        }
-
-        for (int i = 0; i < _askerParent.transform.childCount; i++)
-        {
-            Destroy(_askerParent.transform.GetChild(i).gameObject);
-        }
-
-        for (int i = 0; i < GameObject.FindGameObjectWithTag("AskerKonumlari").GetComponent<AskerKonumlariList>()._askerKonumlariList.Count; i++)
-        {
-            GameObject.FindGameObjectWithTag("AskerKonumlari").GetComponent<AskerKonumlariList>()._askerKonumlariList[i].GetComponent<AskerToplamaKonumlar>()._doluMu = false;
-        }
-
-        _levelText.text = "Lv " + _playerLevel.ToString();
-
-        _silah.SetActive(false);
+        _timerSlider.value = 0;
 
     }
 

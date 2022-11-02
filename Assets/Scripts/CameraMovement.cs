@@ -12,7 +12,7 @@ public class CameraMovement : MonoBehaviour
 
     void Start()
     {
-        Player = GameObject.FindGameObjectWithTag("KarakterPaketi");
+        Player = GameObject.FindGameObjectWithTag("Player");
         aradakiFark = transform.position - Player.transform.position;
     }
 
