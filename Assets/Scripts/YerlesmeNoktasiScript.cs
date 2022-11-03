@@ -50,7 +50,15 @@ public class YerlesmeNoktasiScript : MonoBehaviour
             {
                 if (PlayerController.instance._yerBelirlendi == false)
                 {
-                    gameObject.GetComponent<MeshRenderer>().material = _aktifMaterial;
+                    if (_yerlesmeNoktasiDoluMu == false)
+                    {
+                        gameObject.GetComponent<MeshRenderer>().material = _aktifMaterial;
+                    }
+                    else
+                    {
+
+                    }
+
                     PlayerController.instance._yerBelirlendi = true;
                     //_yerlesmeNoktasiDoluMu = true;
 
@@ -73,6 +81,8 @@ public class YerlesmeNoktasiScript : MonoBehaviour
             else
             {
                 // Burada Yer Degistirme Kodlari Olacak
+                /*
+                
                 if (other.gameObject != _yerlesenKup.transform.GetChild(0).gameObject)
                 {
                     if (_yerlesmeNoktasiNumber > 0)
@@ -190,7 +200,7 @@ public class YerlesmeNoktasiScript : MonoBehaviour
 
                 }
 
-
+                */
 
 
                 Debug.Log("Bu Nokta Dolu");
@@ -238,7 +248,15 @@ public class YerlesmeNoktasiScript : MonoBehaviour
     {
         if (other.gameObject.tag == "KontrolObjesi")
         {
-            gameObject.GetComponent<MeshRenderer>().material = _standartMaterial;
+            if (_yerlesmeNoktasiDoluMu == false)
+            {
+                gameObject.GetComponent<MeshRenderer>().material = _standartMaterial;
+            }
+            else
+            {
+
+            }
+
             PlayerController.instance._yerBelirlendi = false;
             other.gameObject.transform.parent.gameObject.GetComponent<KupScript>()._tekrarYerlesebilir = true;
 

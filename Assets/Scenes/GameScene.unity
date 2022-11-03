@@ -686,7 +686,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4044717213e31446939f7bd49c896ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TrackedObjectOffset: {x: 0, y: 5, z: 0}
+  m_TrackedObjectOffset: {x: 0, y: 0, z: 0}
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
@@ -2303,7 +2303,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.38268346, y: -7.1054274e-15, z: 2.6645355e-15, w: 0.92387956}
+  m_LocalRotation: {x: 0.47185794, y: 0.000000015170428, z: -0.000000008118967, w: 0.88167465}
   m_LocalPosition: {x: 0, y: 16, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2795,7 +2795,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1392333708}
-  m_LocalRotation: {x: 0.38268346, y: -7.1054274e-15, z: 2.6645355e-15, w: 0.92387956}
+  m_LocalRotation: {x: 0.47185794, y: 0.000000015170428, z: -0.000000008118967, w: 0.88167465}
   m_LocalPosition: {x: 0, y: 16, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3034,7 +3034,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 115085288306049259e5bb7ad04089ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 5
+  _speed: 3
   _floatingJoystick: {fileID: 632260228}
   _rigidbody: {fileID: 1443049515}
   _velocityX: 0

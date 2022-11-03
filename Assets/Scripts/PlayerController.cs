@@ -218,6 +218,8 @@ public class PlayerController : MonoBehaviour
 
     private void KazandiEkrani()
     {
+        MoreMountains.NiceVibrations.MMVibrationManager.Haptic(MoreMountains.NiceVibrations.HapticTypes.MediumImpact);
+
         GameController.instance.ScoreCarp(1);
         UIController.instance.ActivateWinScreen();
     }
